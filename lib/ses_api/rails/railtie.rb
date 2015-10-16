@@ -1,3 +1,4 @@
+require 'ses_api/rails/api'
 module SesApi
   module Rails
     class Railtie < ::Rails::Railtie
