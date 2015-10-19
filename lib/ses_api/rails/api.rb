@@ -9,15 +9,15 @@ module SesApi
 
       class_attribute :conn, :mail
 
-      self.conn = Faraday.new(:url => "https://#{SesApi::Rails.configuration.ses_endpoint}") do |faraday|
-        faraday.request  :url_encoded             # form-encode POST params
-        faraday.response :logger                  # log requests to STDOUT
-        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
-      end
-
       def initialize(values)
         self.settings = {
           }.merge!(values)
+
+        self.conn = Faraday.new(:url => "https://#{SesApi::Rails.configuration.ses_endpoint}") do |faraday|
+          faraday.request  :url_encoded             # form-encode POST params
+          faraday.response :logger                  # log requests to STDOUT
+          faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+        end
       end
 
       def settings

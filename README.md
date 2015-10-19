@@ -48,22 +48,24 @@ gem 'ses_api-rails', git: 'https://github.com/cickes/ses_api-rails.git'
 
 ## A Step By Step Example  
 1. (OPTIONAL) After the ses_api-rails gem is installed, add your Amazon AWS / SES credentials to environment variables.  
-    NOTE:  There are many ways to set environment variables.  This example uses the Figaro gem.
+    NOTE:  There are many ways to set environment variables.  This example uses the Figaro gem.  
     ```
     # Gemfile  
     gem 'figaro'  
     ```  
+    ```
     `bundle install`  
     `figaro install`  
     ```
-    # config/application.yml  
     ```
+    # config/application.yml  
     SECRET_ACCESS_KEY: "secret_access_key"  
     AWS_ACCESS_KEY_ID: "aws_access_key_id"  
     AWS_REGION:  "us-east-1"  
     SES_ENDPOINT:  "email.us-east-1.amazonaws.com"
-    ```
-2.  Create an initializer that assigns your AWS credentials to constants.  There are multiple ways to accomplish this including simply hardcoding a string value.  The example below uses Figaro environment variables.  
+    ```  
+
+2. Create an initializer that assigns your AWS credentials to constants.  There are multiple ways to accomplish this including simply hardcoding a string value.  The example below uses Figaro environment variables.  
     ```
     # config/initializers/ses_api-rails.rb
     SesApi::Rails.configure do |config|
@@ -72,11 +74,12 @@ gem 'ses_api-rails', git: 'https://github.com/cickes/ses_api-rails.git'
       config.aws_region = Figaro.env.aws_region
       config.ses_endpoint = Figaro.env.ses_endpoint
     end
-    ```
+    ```  
+
 3.  Create a Mailer that subclasses the SesApi::Rails::Mailer  
     `rails g mailer ContactMailer`  
     If you are only sending email from the Amazon Ses Api, you can subclass the ApplicationMailer.  Otherwise subclass the Mailer that will use the Ses delivery method.  
-    * Using the Amazon Ses API as the only delivery method application-wide
+    * Using the Amazon Ses API as the only delivery method application-wide  
         ```
         # app/mailers/application_mailer.rb  
         class ApplicationMailer < SesApi::Rails::Mailer
@@ -103,7 +106,8 @@ gem 'ses_api-rails', git: 'https://github.com/cickes/ses_api-rails.git'
     # app/views/contact_mailer/contact.text.erb  
     This is a text version  
     Hello new contact
-    ````
+    ```  
+
 4. Instantiate the mailer where appropriate.  
     NOTE:  This assumes that you have a form, model, etc. & is not covered in the installation guide of this gem.   
     ```
