@@ -1,6 +1,7 @@
 require 'mail'
 require 'faraday'
 require 'ses_api/rails/version'
+require 'ses_api/rails/configuration'
 require 'ses_api/rails/railtie'
 
 module SesApi

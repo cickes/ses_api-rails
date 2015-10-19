@@ -4,15 +4,12 @@ module SesApi
     # defines Mail::delivery_method
     class Api < Mail::SMTP
       ALGO = "AWS4-HMAC-SHA256"
-      SECRET_ACCESS_KEY = ENV['SES_SECRET_ACCESS_KEY']
-      ACCESS_KEY_ID = ENV['SES_AWS_ACCESS_KEY_ID']
-      AWS_REGION = ENV['AWS_REGION']
       SERVICE = "ses"
       TERM_STR = "aws4_request"
 
       class_attribute :conn, :mail
 
-      self.conn = Faraday.new(:url => "https://#{ENV['SES_ENDPOINT']}") do |faraday|
+      self.conn = Faraday.new(:url => "https://#{SesApi::Rails.configuration.ses_endpoint}") do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
@@ -35,7 +32,7 @@ module SesApi
         response = conn.post do |req|
           req.body = create_payload
           hashed_payload = Digest::SHA256.hexdigest(req.body) #.downcase
-          headers = { :'X-Amz-Date' => dt, Host: ENV['SES_ENDPOINT'], :'X-Amz-Content-Sha256' => hashed_payload }
+          headers = { :'X-Amz-Date' => dt, Host: "#{SesApi::Rails.configuration.ses_endpoint}", :'X-Amz-Content-Sha256' => hashed_payload }
           headers.each do |addtl_header, value|
             req.headers[addtl_header.to_s.camelize] = value
           end
@@ -52,7 +49,7 @@ module SesApi
       end
 
       def create_credential_scope(request_datetime)
-        "#{request_datetime[0,8]}/#{AWS_REGION}/#{SERVICE}/#{TERM_STR}"
+        "#{request_datetime[0,8]}/#{SesApi::Rails.configuration.aws_region}/#{SERVICE}/#{TERM_STR}"
       end
 
       def create_payload
@@ -70,7 +67,7 @@ module SesApi
           body << "&Message.Body.Text.Data=#{CGI::escape(mail.text_part.body.raw_source)}&Message.Body.Text.Charset=UTF-8"
         end
 
-        payload = "AWSAccessKeyId=#{ACCESS_KEY_ID}&Action=SendEmail#{to}#{cc}#{bcc}#{body}#{subject}#{from}"
+        payload = "AWSAccessKeyId=#{SesApi::Rails.configuration.access_key_id}&Action=SendEmail#{to}#{cc}#{bcc}#{body}#{subject}#{from}"
       end
 
       def create_canonical_request(headers, hashed_payload, signed_headers)
@@ -86,12 +83,12 @@ module SesApi
         signed_headers = headers.sort.map { |k,v| "#{k.downcase}" }.join(";")
         string_to_sign = create_str_to_sign(request_datetime, credential_scope, headers, hashed_payload, signed_headers)
         signing_signature = create_signature(signing_key, string_to_sign)
-        return "#{ALGO} Credential=#{ACCESS_KEY_ID}/#{credential_scope}, SignedHeaders=#{signed_headers}, Signature=#{signing_signature}"
+        return "#{ALGO} Credential=#{SesApi::Rails.configuration.access_key_id}/#{credential_scope}, SignedHeaders=#{signed_headers}, Signature=#{signing_signature}"
       end
 
       def create_signing_key(request_datetime)
-        key_date = hmac("AWS4" + SECRET_ACCESS_KEY, request_datetime[0,8])
-        key_region = hmac(key_date, AWS_REGION)
+        key_date = hmac("AWS4" + SesApi::Rails.configuration.secret_access_key, request_datetime[0,8])
+        key_region = hmac(key_date, SesApi::Rails.configuration.aws_region)
         key_service = hmac(key_region, SERVICE)
         key_credentials = hmac(key_service, TERM_STR)
       end
