@@ -3,6 +3,7 @@ module SesApi
 
     # defines Mail::delivery_method
     class Api < Mail::SMTP
+      # constants
       ALGO = "AWS4-HMAC-SHA256"
       SERVICE = "ses"
       TERM_STR = "aws4_request"

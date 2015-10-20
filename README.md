@@ -129,4 +129,5 @@ gem 'ses_api-rails', git: 'https://github.com/cickes/ses_api-rails.git'
 Is the library included?  One way to do so is to autoload all library sub-directories:  
 `config.autoload_paths += Dir["#{config.root}/lib/**/"]`  
   
+Is the time correct?  Recommended to use ntp or another time snychronization method  
 

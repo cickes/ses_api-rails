@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "ses_api-rails"
   spec.version       = SesApi::Rails::VERSION
   spec.authors       = ["Chris Ickes"]
-  spec.email         = ["christopherickes@gmail.com"]
+  spec.email         = ["chris@ickessoftware.com"]
 
   spec.summary       = %q{Basic Rails / Amazon SES API Integration.}
   spec.description   = %q{Rails / Amazon SES API integration for basic transactional email sending.}
