@@ -81,7 +81,7 @@ bundle install
 3.  Create a Mailer that subclasses the SesApi::Rails::Mailer  
     `rails g mailer ContactMailer`  
     If you are only sending email from the Amazon Ses Api, you can subclass the ApplicationMailer.  Otherwise subclass the Mailer that will use the Ses delivery method.  
-    * Using the Amazon Ses API as the only delivery method application-wide  
+    * Using the Amazon Ses API as the only delivery method application-wide   
         ```
         # app/mailers/application_mailer.rb  
         class ApplicationMailer < SesApi::Rails::Mailer
@@ -97,7 +97,8 @@ bundle install
             mail to: "you@example.com", subject: "Via Ses"
           end
         end
-        ```
+        ```  
+
     Create a mailer view(s)  
     ```
     # app/views/contact_mailer/contact.html.erb  
@@ -131,5 +132,5 @@ bundle install
 Is the library included?  One way to do so is to autoload all library sub-directories:  
 `config.autoload_paths += Dir["#{config.root}/lib/**/"]`  
   
-Is the time correct?  Recommended to use ntp or another time snychronization method  
+Is the time correct?  Recommend ntp or another time snychronization method.  
 
