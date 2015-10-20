@@ -4,9 +4,11 @@ Basic SES API integration with Rails specifically for transaction based emails -
 ## Install the SES API Rails gem  
 ```
 # Gemfile
-gem 'ses_api-rails', git: 'https://github.com/cickes/ses_api-rails.git'
+gem 'ses_api-rails'
 ```  
-`bundle install`  
+```
+bundle install
+```  
 
 ## High Level Integration Details  
 1. Create an initializer file defining your AWS credentials as constants  
@@ -54,8 +56,8 @@ gem 'ses_api-rails', git: 'https://github.com/cickes/ses_api-rails.git'
     gem 'figaro'  
     ```  
     ```
-    `bundle install`  
-    `figaro install`  
+    bundle install  
+    figaro install
     ```
     ```
     # config/application.yml  
