@@ -81,23 +81,23 @@ bundle install
 3.  Create a Mailer that subclasses the SesApi::Rails::Mailer  
     `rails g mailer ContactMailer`  
     If you are only sending email from the Amazon Ses Api, you can subclass the ApplicationMailer.  Otherwise subclass the Mailer that will use the Ses delivery method.  
-    * Using the Amazon Ses API as the only delivery method application-wide   
-        ```
-        # app/mailers/application_mailer.rb  
-        class ApplicationMailer < SesApi::Rails::Mailer
-          default from: "from@example.com"  
-          layout 'mailer'
-        end
-        ```
-        ```
-        # app/mailers/contact_mailer.rb  
-        class ContactMailer < ApplicationMailer
-          ...
-          def contact
-            mail to: "you@example.com", subject: "Via Ses"
-          end
-        end
-        ```  
+    Using the Amazon Ses API as the only delivery method application-wide   
+    ```
+    # app/mailers/application_mailer.rb  
+    class ApplicationMailer < SesApi::Rails::Mailer
+      default from: "from@example.com"  
+      layout 'mailer'
+    end
+    ```
+    ```
+    # app/mailers/contact_mailer.rb  
+    class ContactMailer < ApplicationMailer
+      ...
+      def contact
+        mail to: "you@example.com", subject: "Via Ses"
+      end
+    end
+    ```  
 
     Create a mailer view(s)  
     ```
