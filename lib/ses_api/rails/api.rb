@@ -55,8 +55,8 @@ module SesApi
 
       def create_payload
         to = mail.to.each_with_index.map { |email, i| "&Destination.ToAddresses.member.#{i+1}=#{CGI::escape(email)}"}.join
-        cc = mail.cc.each_with_index.map { |email, i| "&Destination.CCAddresses.member.#{i+1}=#{CGI::escape(email)}"}.join if mail.cc.present?
-        bcc = mail.bcc.each_with_index.map { |email, i| "&Destination.BCCAddresses.member.#{i+1}=#{CGI::escape(email)}"}.join if mail.bcc.present?
+        cc = mail.cc.each_with_index.map { |email, i| "&Destination.CcAddresses.member.#{i+1}=#{CGI::escape(email)}"}.join if mail.cc.present?
+        bcc = mail.bcc.each_with_index.map { |email, i| "&Destination.BccAddresses.member.#{i+1}=#{CGI::escape(email)}"}.join if mail.bcc.present?
         from = "&Source=#{CGI::escape(mail.from[0])}"
         subject = "&Message.Subject.Data=#{CGI::escape(mail.subject)}"
 
