@@ -54,10 +54,9 @@ module SesApi
       end
 
       def create_payload
-        to = mail.to.each_with_index.map { |email, i| "&Destination.ToAddresses.member.#{i+1}=#{CGI::escape(email)}"}.join
-        cc = mail.cc.each_with_index.map { |email, i| "&Destination.CcAddresses.member.#{i+1}=#{CGI::escape(email)}"}.join if mail.cc.present?
-        bcc = mail.bcc.each_with_index.map { |email, i| "&Destination.BccAddresses.member.#{i+1}=#{CGI::escape(email)}"}.join if mail.bcc.present?
-        from = "&Source=#{CGI::escape(mail.from[0])}"
+        display_names = create_display_names
+        destinations = build_destination_addresses(display_names)
+        from = "&Source=#{format_email(mail.from[0], display_names)}"
         subject = "&Message.Subject.Data=#{CGI::escape(mail.subject)}"
 
         if mail.body.raw_source.present?
@@ -68,7 +67,31 @@ module SesApi
           body << "&Message.Body.Text.Data=#{CGI::escape(mail.text_part.body.raw_source)}&Message.Body.Text.Charset=UTF-8"
         end
 
-        payload = "AWSAccessKeyId=#{SesApi::Rails.configuration.access_key_id}&Action=SendEmail#{to}#{cc}#{bcc}#{body}#{subject}#{from}"
+        payload = "AWSAccessKeyId=#{SesApi::Rails.configuration.access_key_id}&Action=SendEmail#{destinations}#{body}#{subject}#{from}"
+      end
+
+      def create_display_names
+        display_names = {}
+        mail.header.fields.each do |f|
+          if %w[To From Cc Bcc].include? f.name
+            f.address_list.addresses.each do |a|
+              email = "#{a.local}@#{a.domain}"
+              display_names.[]=(email, a.display_name) ? a.display_name.present? : a.local
+            end
+          end
+        end
+        display_names
+      end
+
+      def build_destination_addresses(display_names)
+        to = mail.to.each_with_index.map { |email, i| "&Destination.ToAddresses.member.#{i+1}=#{format_email(email, display_names)}"}.join
+        cc = mail.cc.each_with_index.map { |email, i| "&Destination.CcAddresses.member.#{i+1}=#{format_email(email, display_names)}"}.join if mail.cc.present?
+        bcc = mail.bcc.each_with_index.map { |email, i| "&Destination.BccAddresses.member.#{i+1}=#{format_email(email, display_names)}"}.join if mail.bcc.present?
+        return "#{to}#{cc}#{bcc}"
+      end
+
+      def format_email(email, display_names)
+        CGI::escape("#{display_names[email]}<#{email}>")
       end
 
       def create_canonical_request(headers, hashed_payload, signed_headers)
