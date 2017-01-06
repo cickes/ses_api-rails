@@ -39,8 +39,8 @@ module SesApi
           end
           req.headers['Authorization'] = create_auth_header(dt, credential_scope, hashed_payload, headers)
         end
-      
-        raise SesApi::Rails::SesError if response.status != 200
+
+        raise SesApi::Rails::SesError, response.body if response.status != 200
       end
 
       def create_datetime
