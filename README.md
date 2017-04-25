@@ -16,7 +16,7 @@ bundle install
     # config/initializers/ses_api-rails.rb
     SesApi::Rails.configure do |config|
       config.secret_access_key = ENV['SECRET_ACCESS_KEY']
-      config.access_key_id = Figaro.env.access_key_id
+      config.access_key_id = Figaro.env.aws_access_key_id
       config.aws_region = "us-east-1"
       config.ses_endpoint = "email.us-east-1.amazonaws.com"
     end
