@@ -72,7 +72,7 @@ bundle install
     # config/initializers/ses_api-rails.rb
     SesApi::Rails.configure do |config|
       config.secret_access_key = Figaro.env.secret_access_key
-      config.access_key_id = Figaro.env.access_key_id
+      config.access_key_id = Figaro.env.aws_access_key_id
       config.aws_region = Figaro.env.aws_region
       config.ses_endpoint = Figaro.env.ses_endpoint
     end
